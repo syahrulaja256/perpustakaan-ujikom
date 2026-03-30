@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Buku;
 use App\Models\Kategori;
+use Illuminate\Support\Facades\Storage;
 
 class BukuController extends Controller
 {
@@ -16,9 +17,9 @@ class BukuController extends Controller
 
         return view('admin.kelola_buku', compact('bukus', 'kategoris'));
     }
+
     public function create()
     {
-        // Ambil semua kategori dari database
         $kategoris = Kategori::all();
         return view('admin.kelola_buku', compact('kategoris'));
     }
@@ -40,13 +41,15 @@ class BukuController extends Controller
             'penerbit' => 'required|string|max:255',
             'tahun_terbit' => 'required|integer',
             'kategori_id' => 'required|exists:kategoris,id',
-            'cover' => 'nullable|image|max:2048',
+            'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // Upload cover jika ada
         $coverPath = null;
+
+        // Upload cover
         if ($request->hasFile('cover')) {
-            $coverPath = $request->file('cover')->store('covers', 'public');
+            $filename = time() . '.' . $request->cover->extension();
+            $coverPath = $request->file('cover')->storeAs('covers', $filename, 'public');
         }
 
         Buku::create([
@@ -64,13 +67,30 @@ class BukuController extends Controller
 
     public function update(Request $request, $id)
     {
-
         $buku = Buku::findOrFail($id);
+
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'penulis' => 'required|string|max:255',
+            'penerbit' => 'required|string|max:255',
+            'tahun_terbit' => 'required|integer',
+            'kategori_id' => 'required|exists:kategoris,id',
+            'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
         $coverPath = $buku->cover;
 
+        // Kalau upload cover baru
         if ($request->hasFile('cover')) {
-            $coverPath = $request->file('cover')->store('cover', 'public');
+
+            // Hapus cover lama
+            if ($buku->cover) {
+                Storage::disk('public')->delete($buku->cover);
+            }
+
+            // Simpan cover baru
+            $filename = time() . '.' . $request->cover->extension();
+            $coverPath = $request->file('cover')->storeAs('covers', $filename, 'public');
         }
 
         $buku->update([
@@ -82,16 +102,22 @@ class BukuController extends Controller
             'cover' => $coverPath
         ]);
 
-        return redirect()->route('admin.kelola_buku');
+        return redirect()->route('admin.kelola_buku')
+            ->with('success', 'Buku berhasil diupdate');
     }
-
 
     public function destroy($id)
     {
         $buku = Buku::findOrFail($id);
 
+        // Hapus cover dari storage
+        if ($buku->cover) {
+            Storage::disk('public')->delete($buku->cover);
+        }
+
         $buku->delete();
 
-        return redirect()->route('admin.kelola_buku');
+        return redirect()->route('admin.kelola_buku')
+            ->with('success', 'Buku berhasil dihapus');
     }
 }
