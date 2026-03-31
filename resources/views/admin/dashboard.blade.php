@@ -109,6 +109,19 @@
                 </p>
             </div>
 
+               <div class="stat-card bg-[#F3F4F6] rounded-2xl p-6 group">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-yellow-500 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/20 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fa-solid fa-laptop-code text-white text-lg"></i>
+                    </div>
+                    <span class="text-[10px] font-bold text-yellow-500 bg-violet-50 px-3 py-1.5 rounded-lg uppercase tracking-wider">Petugas</span>
+                </div>
+                <p class="text-3xl font-bold text-gray-800 mb-1 animate-count-up">{{ $totalPetugas }}</p>
+                <p class="text-xs text-gray-500 flex items-center gap-1.5">
+                    <i class="fa-solid fa-tag text-yellow-500 text-[10px]"></i>
+                    Total Petugas
+                </p>
+            </div>
         </div>
 
         {{-- Quick Actions --}}

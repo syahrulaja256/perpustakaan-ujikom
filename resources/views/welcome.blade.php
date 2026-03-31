@@ -147,7 +147,7 @@
                 </div>
                 <span class="font-bold text-gray-700">Perpustakaan Digital</span>
             </div>
-            <p class="text-xs text-gray-400">&copy; {{ date('Y') }} Perpustakaan Digital. All rights reserved.</p>
+            <p class="text-xs text-gray-400">&copy; {{ date('Y') }} Perpustakaan Digital. Powered By Muhammad Syahrul Firmansyah</p>
         </div>
     </footer>
 

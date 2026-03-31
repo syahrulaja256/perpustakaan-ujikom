@@ -18,13 +18,14 @@ class AdminController extends Controller
     {
         $totalBuku = Buku::count();
         $totalUser = User::where('role', 'user')->count();
+        $totalPetugas = User::where('role', 'petugas')->count();
         $totalPinjam = Peminjaman::where('status', 'Dikonfirmasi')->count();
         $totalKembali = Peminjaman::where('status', 'Dikembalikan')->count();
         $totalMenunggu = Peminjaman::where('status', 'Menunggu')->count();
         $totalKategori = Kategori::count();
 
         return view('admin.dashboard', compact(
-            'totalBuku', 'totalUser', 'totalPinjam', 'totalKembali', 'totalMenunggu', 'totalKategori'
+            'totalBuku', 'totalUser','totalPetugas', 'totalPinjam', 'totalKembali', 'totalMenunggu', 'totalKategori'
         ));
     }
 
