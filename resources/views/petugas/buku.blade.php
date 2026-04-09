@@ -55,6 +55,11 @@
                             </select>
                         </div>
                         <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Stok</label>
+                            <input type="number" name="stok" placeholder="Jumlah Stok" required min="0"
+                                class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 focus:outline-none transition">
+                        </div>
+                        <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1.5">Cover</label>
                             <input type="file" name="cover"
                                 class="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cyan-50 file:text-cyan-500">
@@ -64,6 +69,79 @@
                         <button type="submit"
                             class="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:shadow-lg transition-all">
                             <i class="fa-solid fa-save"></i> Simpan
+                        </button>
+                        <a href="{{ route('petugas.buku') }}" class="bg-slate-200 hover:bg-slate-300 text-slate-600 px-5 py-2.5 rounded-xl text-sm font-semibold transition">Batal</a>
+                    </div>
+                </form>
+                @if($errors->any())
+                    <div class="mt-3 bg-red-50 text-red-600 rounded-xl p-3 text-xs">
+                        @foreach($errors->all() as $error)<p>• {{ $error }}</p>@endforeach
+                    </div>
+                @endif
+            </div>
+        @endif
+
+        {{-- Form Edit --}}
+        @if (request('edit'))
+            @php
+                $bukuEdit = \App\Models\Buku::findOrFail(request('edit'));
+            @endphp
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                <h3 class="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-pen text-amber-500"></i> Edit Buku
+                </h3>
+                <form method="POST" action="{{ route('petugas.buku.update', $bukuEdit->id) }}" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Judul</label>
+                            <input type="text" name="judul" placeholder="Judul buku" value="{{ $bukuEdit->judul }}" required
+                                class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-amber-400 focus:border-amber-400 focus:outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Penulis</label>
+                            <input type="text" name="penulis" placeholder="Penulis" value="{{ $bukuEdit->penulis }}" required
+                                class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-amber-400 focus:border-amber-400 focus:outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Penerbit</label>
+                            <input type="text" name="penerbit" placeholder="Penerbit" value="{{ $bukuEdit->penerbit }}" required
+                                class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-amber-400 focus:border-amber-400 focus:outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Tahun Terbit</label>
+                            <input type="number" name="tahun_terbit" placeholder="2024" value="{{ $bukuEdit->tahun_terbit }}" required
+                                class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-amber-400 focus:border-amber-400 focus:outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Kategori</label>
+                            <select name="kategori_id" required
+                                class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-amber-400 focus:border-amber-400 focus:outline-none transition">
+                                <option value="">Pilih Kategori</option>
+                                @foreach($kategoris as $k)
+                                    <option value="{{ $k->id }}" {{ $bukuEdit->kategori_id == $k->id ? 'selected' : '' }}>{{ $k->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Stok</label>
+                            <input type="number" name="stok" placeholder="Jumlah Stok" value="{{ $bukuEdit->stok }}" required min="0"
+                                class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-amber-400 focus:border-amber-400 focus:outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Cover</label>
+                            <input type="file" name="cover"
+                                class="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-amber-500">
+                            @if($bukuEdit->cover)
+                                <p class="text-xs text-slate-500 mt-1">Cover saat ini: <a href="{{ asset('storage/' . $bukuEdit->cover) }}" target="_blank" class="text-amber-500 hover:underline">Lihat</a></p>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="mt-4 flex gap-2">
+                        <button type="submit"
+                            class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:shadow-lg transition-all">
+                            <i class="fa-solid fa-save"></i> Update
                         </button>
                         <a href="{{ route('petugas.buku') }}" class="bg-slate-200 hover:bg-slate-300 text-slate-600 px-5 py-2.5 rounded-xl text-sm font-semibold transition">Batal</a>
                     </div>
@@ -89,6 +167,8 @@
                             <th class="px-5 py-4 text-left text-xs font-semibold">Penerbit</th>
                             <th class="px-5 py-4 text-left text-xs font-semibold">Tahun</th>
                             <th class="px-5 py-4 text-left text-xs font-semibold">Kategori</th>
+                            <th class="px-5 py-4 text-left text-xs font-semibold">Stok</th>
+                            <th class="px-5 py-4 text-center text-xs font-semibold">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
@@ -109,10 +189,27 @@
                                 <td class="px-5 py-3 text-sm text-slate-500">{{ $buku->penerbit }}</td>
                                 <td class="px-5 py-3 text-sm text-slate-500">{{ $buku->tahun_terbit }}</td>
                                 <td class="px-5 py-3"><span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg font-medium">{{ $buku->kategori->nama ?? '-' }}</span></td>
+                                <td class="px-5 py-3 text-sm text-slate-500">{{ $buku->stok }}</td>
+                                <td class="px-5 py-3 text-center">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <a href="{{ route('petugas.buku') }}?edit={{ $buku->id }}"
+                                            class="inline-flex items-center gap-1 bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm">
+                                            <i class="fa-solid fa-pen text-[10px]"></i> Edit
+                                        </a>
+                                        <form action="{{ route('petugas.buku.destroy', $buku->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button onclick="return confirm('Yakin hapus buku ini?')"
+                                                class="inline-flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm">
+                                                <i class="fa-solid fa-trash text-[10px]"></i> Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center py-12">
+                                <td colspan="9" class="text-center py-12">
                                     <div class="w-16 h-16 mx-auto bg-slate-100 rounded-2xl flex items-center justify-center mb-3"><i class="fa-solid fa-book text-slate-300 text-xl"></i></div>
                                     <p class="text-slate-400 text-sm">Belum ada buku</p>
                                 </td>

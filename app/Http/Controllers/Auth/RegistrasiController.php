@@ -25,6 +25,7 @@ class RegistrasiController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'alamat' => $request->alamat,
             'password' => bcrypt($request->password),
             'role' => 'user', // jangan lupa role supaya redirect user_dashboard bisa jalan
         ]);

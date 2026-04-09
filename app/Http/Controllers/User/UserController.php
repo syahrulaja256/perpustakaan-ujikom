@@ -62,6 +62,18 @@ class UserController extends Controller
     // Submit peminjaman → langsung redirect ke cetak PDF
     public function peminjamanSubmit(Request $request)
     {
+        $buku = Buku::findOrFail($request->buku_id);
+
+        $request->validate([
+            'buku_id' => 'required|exists:bukus,id',
+            'kelas' => 'required|string|max:255',
+            'jurusan' => 'required|string|max:255',
+            'no_hp' => 'required|string|max:15',
+            'tanggal_pinjam' => 'required|date',
+            'tanggal_kembali' => 'required|date|after:tanggal_pinjam',
+            'jumlah' => 'required|integer|min:1|max:' . $buku->stok,
+        ]);
+
         $peminjaman = Peminjaman::create([
             'user_id' => Auth::id(),
             'buku_id' => $request->buku_id,
@@ -70,6 +82,7 @@ class UserController extends Controller
             'no_hp' => $request->no_hp,
             'tanggal_pinjam' => $request->tanggal_pinjam,
             'tanggal_kembali' => $request->tanggal_kembali,
+            'jumlah' => $request->jumlah,
             'status' => 'Menunggu'
         ]);
 
@@ -117,27 +130,75 @@ class UserController extends Controller
 
         $peminjaman = Peminjaman::findOrFail($request->peminjaman_id);
 
-        $peminjaman->rating = $request->rating;
-        $peminjaman->ulasan = $request->ulasan;
-        $peminjaman->status = 'Menunggu Pengembalian';
+        // Cek apakah pengembalian terlambat
+        $tanggalKembali = \Carbon\Carbon::parse($peminjaman->tanggal_kembali);
+        $sekarang = \Carbon\Carbon::now();
 
-        $peminjaman->save();
+        if ($sekarang->gt($tanggalKembali)) {
+            // Terlambat - redirect ke form alasan terlambat
+            $peminjaman->rating = $request->rating;
+            $peminjaman->ulasan = $request->ulasan;
+            $peminjaman->status = 'Pengembalian Terlambat';
+            $peminjaman->terlambat = true;
+            $peminjaman->tanggal_pengembalian_aktual = $sekarang->toDateString();
+            $peminjaman->save();
 
-        return redirect()->route('user.riwayat')
-            ->with('success', 'Ulasan berhasil dikirim & pengembalian diajukan. Menunggu konfirmasi admin/petugas.');
+            return redirect()->route('user.alasan_terlambat.form', $peminjaman->id)
+                ->with('warning', 'Pengembalian Anda terlambat. Silakan berikan alasan pengembalian terlambat.');
+        } else {
+            // Tepat waktu
+            $peminjaman->rating = $request->rating;
+            $peminjaman->ulasan = $request->ulasan;
+            $peminjaman->status = 'Menunggu Pengembalian';
+            $peminjaman->tanggal_pengembalian_aktual = $sekarang->toDateString();
+            $peminjaman->save();
+
+            return redirect()->route('user.riwayat')
+                ->with('success', 'Ulasan berhasil dikirim & pengembalian diajukan. Menunggu konfirmasi admin/petugas.');
+        }
     }
 
 
-    // List ulasan user
-    public function ulasanList()
+    // Form alasan pengembalian terlambat
+    public function alasanTerlambatForm($id)
     {
-        $ulasan = Peminjaman::where('user_id', Auth::id())
-            ->whereNotNull('rating')
-            ->with('buku')
-            ->latest()
-            ->get();
+        $peminjaman = Peminjaman::with('buku')->findOrFail($id);
 
-        return view('user.ulasan_list', compact('ulasan'));
+        // Pastikan hanya bisa akses jika status Pengembalian Terlambat
+        if ($peminjaman->status !== 'Pengembalian Terlambat') {
+            return redirect()->route('user.riwayat')
+                ->with('error', 'Form ini hanya untuk pengembalian terlambat.');
+        }
+
+        // Hitung hari terlambat
+        $tanggalKembali = \Carbon\Carbon::parse($peminjaman->tanggal_kembali);
+        $sekarang = \Carbon\Carbon::now();
+        $hariTerlambat = $sekarang->diffInDays($tanggalKembali);
+
+        return view('user.alasan_terlambat', compact('peminjaman', 'hariTerlambat'));
+    }
+
+    // Submit alasan pengembalian terlambat
+    public function submitAlasanTerlambat(Request $request)
+    {
+        $request->validate([
+            'alasan_terlambat' => 'required|string|min:10|max:500'
+        ]);
+
+        $peminjaman = Peminjaman::findOrFail($request->peminjaman_id);
+
+        // Pastikan status masih Pengembalian Terlambat
+        if ($peminjaman->status !== 'Pengembalian Terlambat') {
+            return redirect()->route('user.riwayat')
+                ->with('error', 'Status pengembalian sudah berubah.');
+        }
+
+        $peminjaman->alasan_terlambat = $request->alasan_terlambat;
+        $peminjaman->status = 'Ditolak Terlambat'; // Status menunggu konfirmasi admin/petugas
+        $peminjaman->save();
+
+        return redirect()->route('user.riwayat')
+            ->with('success', 'Alasan pengembalian terlambat berhasil dikirim. Menunggu konfirmasi admin/petugas.');
     }
 
 

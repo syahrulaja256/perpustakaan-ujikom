@@ -25,6 +25,7 @@ class ProfileController extends Controller
 
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->alamat = $request->alamat;
 
         if ($request->filled('password')) {
             $request->validate([

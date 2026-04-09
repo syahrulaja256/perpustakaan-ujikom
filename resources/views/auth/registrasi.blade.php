@@ -58,7 +58,7 @@
                             <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
                             <input type="text" name="name" required
                                 class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-sm text-white placeholder-slate-500 focus:ring-2 focus:ring-[#14B8A6] focus:border-[#14B8A6] focus:outline-none transition"
-                                placeholder="John Doe">
+                                placeholder="Masukkan Nama Anda">
                         </div>
                     </div>
 
@@ -89,6 +89,16 @@
                             <input type="password" name="password_confirmation" required
                                 class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-sm text-white placeholder-slate-500 focus:ring-2 focus:ring-[#14B8A6] focus:border-[#14B8A6] focus:outline-none transition"
                                 placeholder="Ulangi password">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-2 uppercase tracking-wider">Alamat</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                            <input type="alamat" name="alamat" required
+                                class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-sm text-white placeholder-slate-500 focus:ring-2 focus:ring-[#14B8A6] focus:border-[#14B8A6] focus:outline-none transition"
+                                placeholder="Masukkan Alamat Anda">
                         </div>
                     </div>
 

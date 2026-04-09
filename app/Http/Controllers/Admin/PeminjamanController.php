@@ -12,12 +12,19 @@ class PeminjamanController extends Controller
     // KONFIRMASI PEMINJAMAN
     public function konfirmasi($id)
     {
-        $p = Peminjaman::findOrFail($id);
+        $p = Peminjaman::with('buku')->findOrFail($id);
 
         $p->status = 'Dikonfirmasi';
         $p->dikonfirmasi_oleh = 'admin';
 
         $p->save();
+
+        // Kurangi stok buku
+        $buku = $p->buku;
+        if ($buku) {
+            $buku->stok -= $p->jumlah;
+            $buku->save();
+        }
 
         return back()->with('success', 'Peminjaman dikonfirmasi');
     }

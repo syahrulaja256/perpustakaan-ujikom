@@ -19,7 +19,12 @@ class Peminjaman extends Model
         'status',
         'rating',
         'ulasan',
-        'dikonfirmasi_oleh'
+        'dikonfirmasi_oleh',
+        'jumlah',
+        'batas_hari',
+        'alasan_terlambat',
+        'terlambat',
+        'tanggal_pengembalian_aktual'
     ];
 
     public function buku()

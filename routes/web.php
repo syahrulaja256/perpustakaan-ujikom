@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\PeminjamanController;
+use App\Http\Controllers\Admin\UlasanController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegistrasiController;
 use App\Http\Controllers\Petugas\PetugasController;
@@ -83,6 +84,10 @@ Route::prefix('user')
         // FORM ULASAN
         Route::get('/kembalikan/{id}', [UserController::class, 'kembalikanForm'])->name('kembalikan.form');
 
+        // FORM ALASAN TERLAMBAT
+        Route::get('/alasan-terlambat/{id}', [UserController::class, 'alasanTerlambatForm'])->name('alasan_terlambat.form');
+        Route::post('/alasan-terlambat/{id}', [UserController::class, 'submitAlasanTerlambat'])->name('alasan_terlambat.submit');
+
         // KEMBALIKAN BUKU
         Route::post('/kembalikan/{id}', [UserController::class, 'kembalikanBuku'])->name('kembalikan.buku');
 
@@ -145,11 +150,20 @@ Route::prefix('admin')
 
         Route::get('/riwayat', [AdminController::class, 'riwayat'])->name('riwayat');
 
+        // HALAMAN ULASAN
+        Route::get('/ulasan', [UlasanController::class, 'index'])->name('ulasan.index');
+        Route::get('/ulasan/{id}', [UlasanController::class, 'show'])->name('ulasan.show');
+        Route::delete('/ulasan/{id}', [UlasanController::class, 'destroy'])->name('ulasan.destroy');
+
         Route::get('/laporan', [AdminController::class, 'laporan'])->name('laporan');
 
         // KONFIRMASI PENGEMBALIAN
         Route::post('/peminjaman/konfirmasi-pengembalian/{id}', [AdminController::class, 'konfirmasiPengembalian'])
             ->name('peminjaman.konfirmasi_pengembalian');
+
+        // KONFIRMASI PENGEMBALIAN TERLAMBAT
+        Route::post('/peminjaman/konfirmasi-pengembalian-terlambat/{id}', [AdminController::class, 'konfirmasiPengembalianTerlambat'])
+            ->name('peminjaman.konfirmasi_pengembalian_terlambat');
 
         // CETAK LAPORAN PDF
         Route::get('/cetak/laporan', [AdminController::class, 'cetakLaporan'])->name('cetak.laporan');
@@ -184,11 +198,15 @@ Route::prefix('petugas')
 
         Route::get('/buku', [PetugasController::class, 'buku'])->name('buku');
         Route::post('/buku/store', [PetugasController::class, 'storeBuku'])->name('buku.store');
+        Route::put('/buku/update/{id}', [PetugasController::class, 'updateBuku'])->name('buku.update');
+        Route::delete('/buku/destroy/{id}', [PetugasController::class, 'destroyBuku'])->name('buku.destroy');
 
         Route::get('/kategori', [PetugasController::class, 'kategori'])->name('kategori');
         Route::post('/kategori/store', [PetugasController::class, 'storeKategori'])->name('kategori.store');
 
         Route::get('/peminjaman', [PetugasController::class, 'peminjaman'])->name('peminjaman');
+
+        Route::get('/ulasan', [PetugasController::class, 'ulasan'])->name('ulasan');
 
         Route::post('/peminjaman/konfirmasi/{id}', [PetugasController::class, 'konfirmasi'])->name('konfirmasi');
 
@@ -199,6 +217,10 @@ Route::prefix('petugas')
         // KONFIRMASI PENGEMBALIAN
         Route::post('/peminjaman/konfirmasi-pengembalian/{id}', [PetugasController::class, 'konfirmasiPengembalian'])
             ->name('konfirmasi_pengembalian');
+
+        // KONFIRMASI PENGEMBALIAN TERLAMBAT (PETUGAS)
+        Route::post('/peminjaman/konfirmasi-pengembalian-terlambat/{id}', [PetugasController::class, 'konfirmasiPengembalianTerlambat'])
+            ->name('konfirmasi_pengembalian_terlambat');
 
         // CETAK LAPORAN PDF
         Route::get('/cetak/laporan', [PetugasController::class, 'cetakLaporan'])->name('cetak.laporan');

@@ -45,6 +45,15 @@
             Data Kategori
         </a>
 
+                <a href="{{ route('petugas.ulasan') }}"
+            class="sidebar-link {{ request()->routeIs('petugas.ulasan') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/90 hover:text-white hover:bg-white/15 transition-all duration-200">
+            <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+                <i class="fa-solid fa-star text-white text-xs"></i>
+            </div>
+            Ulasan
+        </a>
+
+
         <p class="px-4 text-[10px] font-bold text-white/50 uppercase tracking-widest mb-3 mt-5">Transaksi</p>
 
         <a href="{{ route('petugas.peminjaman') }}"
@@ -54,6 +63,8 @@
             </div>
             Peminjaman
         </a>
+
+
 
         <p class="px-4 text-[10px] font-bold text-white/50 uppercase tracking-widest mb-3 mt-5">Laporan</p>
 

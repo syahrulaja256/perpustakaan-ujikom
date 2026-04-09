@@ -29,6 +29,7 @@
                     </div>
                     <h2 class="text-xl font-bold text-white">{{ $user->name }}</h2>
                     <p class="text-white/80 text-sm mt-1">{{ $user->email }}</p>
+                    <p class="text-white/80 text-sm mt-1">{{ $user->alamat }}</p>
                     <span class="inline-flex items-center gap-1 bg-white/20 text-white text-xs px-3 py-1 rounded-full mt-3 font-semibold border border-white/10">
                         <i class="fa-solid fa-{{ $user->role == 'admin' ? 'shield-halved' : ($user->role == 'petugas' ? 'user-tie' : 'user') }} text-[10px]"></i>
                         {{ ucfirst($user->role) }}
@@ -70,6 +71,15 @@
                     <input type="email" name="email" value="{{ $user->email }}" required
                         class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#14B8A6] focus:border-[#14B8A6] focus:outline-none transition">
                 </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-2">
+                        <i class="fa-solid fa-home text-[#14B8A6] mr-1"></i> Alamat
+                    </label>
+                    <input type="text" name="alamat" value="{{ $user->alamat }}" required
+                        class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#14B8A6] focus:border-[#14B8A6] focus:outline-none transition">
+                </div>
+
 
                 <hr class="border-gray-200">
 

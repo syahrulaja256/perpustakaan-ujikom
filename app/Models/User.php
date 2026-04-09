@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'alamat',
         'role',
     ];
 
@@ -50,5 +51,10 @@ class User extends Authenticatable
     public function favorites()
     {
         return $this->belongsToMany(\App\Models\Buku::class, 'favorites', 'user_id', 'buku_id');
+    }
+
+    public function peminjaman()
+    {
+        return $this->hasMany(Peminjaman::class);
     }
 }

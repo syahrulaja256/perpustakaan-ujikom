@@ -41,6 +41,7 @@ class BukuController extends Controller
             'penerbit' => 'required|string|max:255',
             'tahun_terbit' => 'required|integer',
             'kategori_id' => 'required|exists:kategoris,id',
+            'stok' => 'required|integer|min:0',
             'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -58,6 +59,7 @@ class BukuController extends Controller
             'penerbit' => $request->penerbit,
             'tahun_terbit' => $request->tahun_terbit,
             'kategori_id' => $request->kategori_id,
+            'stok' => $request->stok,
             'cover' => $coverPath,
         ]);
 
@@ -75,6 +77,7 @@ class BukuController extends Controller
             'penerbit' => 'required|string|max:255',
             'tahun_terbit' => 'required|integer',
             'kategori_id' => 'required|exists:kategoris,id',
+            'stok' => 'required|integer|min:0',
             'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -99,6 +102,7 @@ class BukuController extends Controller
             'penerbit' => $request->penerbit,
             'tahun_terbit' => $request->tahun_terbit,
             'kategori_id' => $request->kategori_id,
+            'stok' => $request->stok,
             'cover' => $coverPath
         ]);
 

@@ -13,6 +13,7 @@
                             <th class="px-5 py-4 text-left text-xs font-semibold">No</th>
                             <th class="px-5 py-4 text-left text-xs font-semibold">Nama User</th>
                             <th class="px-5 py-4 text-left text-xs font-semibold">Judul Buku</th>
+                            <th class="px-5 py-4 text-left text-xs font-semibold">Jumlah</th>
                             <th class="px-5 py-4 text-left text-xs font-semibold">Tgl Pinjam</th>
                             <th class="px-5 py-4 text-left text-xs font-semibold">Tgl Kembali</th>
                             <th class="px-5 py-4 text-center text-xs font-semibold">Status</th>
@@ -25,6 +26,7 @@
                                 <td class="px-5 py-3.5 text-sm text-slate-500">{{ $i + 1 }}</td>
                                 <td class="px-5 py-3.5 text-sm font-medium text-slate-700">{{ $p->user->name ?? '-' }}</td>
                                 <td class="px-5 py-3.5 text-sm text-slate-600">{{ $p->buku->judul ?? '-' }}</td>
+                                <td class="px-5 py-3.5 text-sm text-slate-500">{{ $p->jumlah }}</td>
                                 <td class="px-5 py-3.5 text-sm text-slate-500">{{ $p->tanggal_pinjam }}</td>
                                 <td class="px-5 py-3.5 text-sm text-slate-500">{{ $p->tanggal_kembali }}</td>
                                 <td class="px-5 py-3.5 text-center">
@@ -52,6 +54,14 @@
                                         <span class="inline-flex items-center gap-1 bg-red-50 text-red-600 px-3 py-1 rounded-lg text-xs font-semibold">
                                             <i class="fa-solid fa-xmark text-[10px]"></i> Ditolak
                                         </span>
+                                    @elseif($p->status == 'Pengembalian Terlambat')
+                                        <span class="inline-flex items-center gap-1 bg-red-50 text-red-600 px-3 py-1 rounded-lg text-xs font-semibold">
+                                            <i class="fa-solid fa-triangle-exclamation text-[10px]"></i> Terlambat
+                                        </span>
+                                    @elseif($p->status == 'Ditolak Terlambat')
+                                        <span class="inline-flex items-center gap-1 bg-orange-50 text-orange-600 px-3 py-1 rounded-lg text-xs font-semibold">
+                                            <i class="fa-solid fa-clock text-[10px]"></i> Menunggu Konfirmasi
+                                        </span>
                                     @endif
                                 </td>
                                 <td class="px-5 py-3.5 text-center">
@@ -72,14 +82,19 @@
                                             </a>
                                         @endif
 
-                                        {{-- Terima Pengembalian --}}
-                                        @if ($p->status == 'Menunggu Pengembalian')
-                                            <form action="{{ route('admin.peminjaman.konfirmasi_pengembalian', $p->id) }}" method="POST">
-                                                @csrf
-                                                <button class="inline-flex items-center gap-1 bg-teal-500 hover:bg-teal-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm">
-                                                    <i class="fa-solid fa-circle-check text-[10px]"></i> Terima Pengembalian
-                                                </button>
-                                            </form>
+                                        {{-- Terima Pengembalian Terlambat --}}
+                                        @if ($p->status == 'Ditolak Terlambat')
+                                            <div class="flex flex-col gap-2">
+                                                <div class="text-xs text-slate-500 bg-slate-50 px-2 py-1 rounded">
+                                                    <strong>Alasan:</strong> {{ $p->alasan_terlambat ?? 'Tidak ada alasan' }}
+                                                </div>
+                                                <form action="{{ route('admin.peminjaman.konfirmasi_pengembalian_terlambat', $p->id) }}" method="POST">
+                                                    @csrf
+                                                    <button class="inline-flex items-center gap-1 bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm">
+                                                        <i class="fa-solid fa-circle-check text-[10px]"></i> Konfirmasi Terlambat
+                                                    </button>
+                                                </form>
+                                            </div>
                                         @endif
 
                                         {{-- Cetak Pengembalian (struk) --}}

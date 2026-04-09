@@ -64,6 +64,11 @@
                             </select>
                         </div>
                         <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Stok</label>
+                            <input type="number" name="stok" placeholder="Jumlah Stok" value="{{ $buku->stok ?? '' }}"
+                                class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 focus:outline-none transition" required min="0">
+                        </div>
+                        <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1.5">Cover</label>
                             <input type="file" name="cover"
                                 class="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-500 hover:file:bg-indigo-100">
@@ -96,6 +101,7 @@
                             <th class="px-5 py-4 text-left text-xs font-semibold">Penerbit</th>
                             <th class="px-5 py-4 text-left text-xs font-semibold">Tahun</th>
                             <th class="px-5 py-4 text-left text-xs font-semibold">Kategori</th>
+                            <th class="px-5 py-4 text-left text-xs font-semibold">Stok</th>
                             <th class="px-5 py-4 text-center text-xs font-semibold">Aksi</th>
                         </tr>
                     </thead>
@@ -121,6 +127,7 @@
                                         {{ $b->kategori ? $b->kategori->nama : '-' }}
                                     </span>
                                 </td>
+                                <td class="px-5 py-3 text-sm text-slate-500">{{ $b->stok }}</td>
                                 <td class="px-5 py-3 text-center">
                                     <div class="flex items-center justify-center gap-2">
                                         <a href="{{ route('admin.bukus.edit', $b->id) }}"
@@ -140,7 +147,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center py-12">
+                                <td colspan="9" class="text-center py-12">
                                     <div class="w-16 h-16 mx-auto bg-slate-100 rounded-2xl flex items-center justify-center mb-3">
                                         <i class="fa-solid fa-book text-slate-300 text-xl"></i>
                                     </div>

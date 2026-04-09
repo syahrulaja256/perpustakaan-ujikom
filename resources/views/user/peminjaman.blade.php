@@ -13,6 +13,7 @@
                         <tr class="bg-gradient-to-r from-slate-800 to-slate-700 text-white">
                             <th class="px-5 py-4 text-left text-xs font-semibold">No</th>
                             <th class="px-5 py-4 text-left text-xs font-semibold">Buku</th>
+                            <th class="px-5 py-4 text-left text-xs font-semibold">Jumlah</th>
                             <th class="px-5 py-4 text-left text-xs font-semibold">Kelas</th>
                             <th class="px-5 py-4 text-left text-xs font-semibold">Jurusan</th>
                             <th class="px-5 py-4 text-left text-xs font-semibold">Tgl Pinjam</th>
@@ -33,6 +34,7 @@
                                         <span class="text-sm font-medium text-slate-700">{{ $p->buku->judul ?? '-' }}</span>
                                     </div>
                                 </td>
+                                <td class="px-5 py-3.5 text-sm text-slate-500">{{ $p->jumlah }}</td>
                                 <td class="px-5 py-3.5 text-sm text-slate-500">{{ $p->kelas ?? '-' }}</td>
                                 <td class="px-5 py-3.5 text-sm text-slate-500">{{ $p->jurusan ?? '-' }}</td>
                                 <td class="px-5 py-3.5 text-sm text-slate-500">{{ $p->tanggal_pinjam }}</td>
@@ -110,7 +112,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center py-12">
+                                <td colspan="9" class="text-center py-12">
                                     <div class="flex flex-col items-center">
                                         <div class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-3">
                                             <i class="fa-solid fa-inbox text-slate-300 text-xl"></i>

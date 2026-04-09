@@ -8,6 +8,7 @@ use App\Models\Kategori;
 use App\Models\Buku;
 use App\Models\Peminjaman;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
 
 class PetugasController extends Controller
 {
@@ -48,6 +49,17 @@ class PetugasController extends Controller
         return view('petugas.laporan', compact('laporan'));
     }
 
+    public function ulasan()
+    {
+        $ulasans = Peminjaman::whereNotNull('ulasan')
+            ->where('ulasan', '!=', '')
+            ->with(['user', 'buku'])
+            ->latest()
+            ->get();
+
+        return view('petugas.ulasan', compact('ulasans'));
+    }
+
     // CETAK LAPORAN PDF
     public function cetakLaporan()
     {
@@ -62,10 +74,17 @@ class PetugasController extends Controller
     // KONFIRMASI PEMINJAMAN
     public function konfirmasi($id)
     {
-        $p = Peminjaman::findOrFail($id);
+        $p = Peminjaman::with('buku')->findOrFail($id);
         $p->status = 'Dikonfirmasi';
         $p->dikonfirmasi_oleh = 'petugas';
         $p->save();
+
+        // Kurangi stok buku
+        $buku = $p->buku;
+        if ($buku) {
+            $buku->stok -= $p->jumlah;
+            $buku->save();
+        }
 
         return back()->with('success', 'Peminjaman dikonfirmasi');
     }
@@ -87,7 +106,33 @@ class PetugasController extends Controller
         $p->status = 'Dikembalikan';
         $p->save();
 
+        // Tambah stok buku kembali
+        $buku = $p->buku;
+        $buku->stok += $p->jumlah;
+        $buku->save();
+
         return back()->with('success', 'Pengembalian dikonfirmasi. Buku telah diterima kembali.');
+    }
+
+    // KONFIRMASI PENGEMBALIAN TERLAMBAT (dengan alasan)
+    public function konfirmasiPengembalianTerlambat($id)
+    {
+        $p = Peminjaman::findOrFail($id);
+
+        // Pastikan status adalah Ditolak Terlambat
+        if ($p->status !== 'Ditolak Terlambat') {
+            return back()->with('error', 'Status peminjaman tidak sesuai untuk konfirmasi pengembalian terlambat.');
+        }
+
+        $p->status = 'Dikembalikan';
+        $p->save();
+
+        // Tambah stok buku kembali
+        $buku = $p->buku;
+        $buku->stok += $p->jumlah;
+        $buku->save();
+
+        return back()->with('success', 'Pengembalian terlambat dikonfirmasi. Buku telah diterima kembali.');
     }
 
     // TAMBAH BUKU
@@ -99,6 +144,7 @@ class PetugasController extends Controller
             'penerbit' => 'required|string|max:255',
             'tahun_terbit' => 'required|integer',
             'kategori_id' => 'required|exists:kategoris,id',
+            'stok' => 'required|integer|min:0',
             'cover' => 'nullable|image|max:2048',
         ]);
 
@@ -113,11 +159,66 @@ class PetugasController extends Controller
             'penerbit' => $request->penerbit,
             'tahun_terbit' => $request->tahun_terbit,
             'kategori_id' => $request->kategori_id,
+            'stok' => $request->stok,
             'cover' => $coverPath,
         ]);
 
         return redirect()->route('petugas.buku')
             ->with('success', 'Buku berhasil ditambahkan!');
+    }
+
+    // UPDATE BUKU
+    public function updateBuku(Request $request, $id)
+    {
+        $buku = Buku::findOrFail($id);
+
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'penulis' => 'required|string|max:255',
+            'penerbit' => 'required|string|max:255',
+            'tahun_terbit' => 'required|integer',
+            'kategori_id' => 'required|exists:kategoris,id',
+            'stok' => 'required|integer|min:0',
+            'cover' => 'nullable|image|max:2048',
+        ]);
+
+        $coverPath = $buku->cover;
+        if ($request->hasFile('cover')) {
+            // Hapus cover lama jika ada
+            if ($buku->cover) {
+                Storage::disk('public')->delete($buku->cover);
+            }
+            $coverPath = $request->file('cover')->store('covers', 'public');
+        }
+
+        $buku->update([
+            'judul' => $request->judul,
+            'penulis' => $request->penulis,
+            'penerbit' => $request->penerbit,
+            'tahun_terbit' => $request->tahun_terbit,
+            'kategori_id' => $request->kategori_id,
+            'stok' => $request->stok,
+            'cover' => $coverPath,
+        ]);
+
+        return redirect()->route('petugas.buku')
+            ->with('success', 'Buku berhasil diupdate!');
+    }
+
+    // HAPUS BUKU
+    public function destroyBuku($id)
+    {
+        $buku = Buku::findOrFail($id);
+
+        // Hapus cover jika ada
+        if ($buku->cover) {
+            Storage::disk('public')->delete($buku->cover);
+        }
+
+        $buku->delete();
+
+        return redirect()->route('petugas.buku')
+            ->with('success', 'Buku berhasil dihapus!');
     }
 
     // TAMBAH KATEGORI

@@ -23,9 +23,10 @@ class AdminController extends Controller
         $totalKembali = Peminjaman::where('status', 'Dikembalikan')->count();
         $totalMenunggu = Peminjaman::where('status', 'Menunggu')->count();
         $totalKategori = Kategori::count();
+        $totalUlasan = Peminjaman::whereNotNull('ulasan')->where('ulasan', '!=', '')->count();
 
         return view('admin.dashboard', compact(
-            'totalBuku', 'totalUser','totalPetugas', 'totalPinjam', 'totalKembali', 'totalMenunggu', 'totalKategori'
+            'totalBuku', 'totalUser','totalPetugas', 'totalPinjam', 'totalKembali', 'totalMenunggu', 'totalKategori', 'totalUlasan'
         ));
     }
 
@@ -96,11 +97,41 @@ class AdminController extends Controller
     // KONFIRMASI PENGEMBALIAN (Admin mengkonfirmasi bahwa buku sudah dikembalikan)
     public function konfirmasiPengembalian($id)
     {
-        $p = Peminjaman::findOrFail($id);
+        $p = Peminjaman::with('buku')->findOrFail($id);
         $p->status = 'Dikembalikan';
         $p->save();
 
+        // Tambah stok buku kembali
+        $buku = $p->buku;
+        if ($buku) {
+            $buku->stok += $p->jumlah;
+            $buku->save();
+        }
+
         return back()->with('success', 'Pengembalian dikonfirmasi. Buku telah diterima kembali.');
+    }
+
+    // KONFIRMASI PENGEMBALIAN TERLAMBAT (dengan alasan)
+    public function konfirmasiPengembalianTerlambat($id)
+    {
+        $p = Peminjaman::with('buku')->findOrFail($id);
+
+        // Pastikan status adalah Ditolak Terlambat
+        if ($p->status !== 'Ditolak Terlambat') {
+            return back()->with('error', 'Status peminjaman tidak sesuai untuk konfirmasi pengembalian terlambat.');
+        }
+
+        $p->status = 'Dikembalikan';
+        $p->save();
+
+        // Tambah stok buku kembali
+        $buku = $p->buku;
+        if ($buku) {
+            $buku->stok += $p->jumlah;
+            $buku->save();
+        }
+
+        return back()->with('success', 'Pengembalian terlambat dikonfirmasi. Buku telah diterima kembali.');
     }
 
     // LAPORAN BUKU
