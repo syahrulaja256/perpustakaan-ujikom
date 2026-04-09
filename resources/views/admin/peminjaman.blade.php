@@ -82,6 +82,16 @@
                                             </a>
                                         @endif
 
+                                        {{-- Konfirmasi Pengembalian --}}
+                                        @if ($p->status == 'Menunggu Pengembalian')
+                                            <form action="{{ route('admin.peminjaman.konfirmasi_pengembalian', $p->id) }}" method="POST">
+                                                @csrf
+                                                <button class="inline-flex items-center gap-1 bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm">
+                                                    <i class="fa-solid fa-circle-check text-[10px]"></i> Konfirmasi Pengembalian
+                                                </button>
+                                            </form>
+                                        @endif
+
                                         {{-- Terima Pengembalian Terlambat --}}
                                         @if ($p->status == 'Ditolak Terlambat')
                                             <div class="flex flex-col gap-2">

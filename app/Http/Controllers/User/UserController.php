@@ -104,6 +104,18 @@ class UserController extends Controller
         return view('user.peminjaman', compact('pinjaman'));
     }
 
+    // Daftar ulasan pengguna
+    public function ulasanList()
+    {
+        $ulasan = Peminjaman::where('user_id', Auth::id())
+            ->whereNotNull('rating')
+            ->whereNotNull('ulasan')
+            ->with('buku')
+            ->latest()
+            ->get();
+
+        return view('user.ulasan_list', compact('ulasan'));
+    }
 
     // Form ulasan (sebelum pengembalian, saat buku masih dipinjam)
     public function kembalikanForm($id)
