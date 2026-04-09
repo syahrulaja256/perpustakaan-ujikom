@@ -28,7 +28,7 @@
                         </div>
                         <div class="flex items-center gap-2 text-sm text-slate-500">
                             <i class="fa-solid fa-boxes text-xs text-green-400"></i>
-                            Stok: {{ $buku['stok'] }}
+                            Stok: {{ $buku['stok'] > 0 ? $buku['stok'] : 'kosong' }}
                         </div>
                     </div>
                 </div>

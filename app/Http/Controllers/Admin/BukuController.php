@@ -78,7 +78,8 @@ class BukuController extends Controller
             'tahun_terbit' => 'required|integer',
             'kategori_id' => 'required|exists:kategoris,id',
             'stok' => 'required|integer|min:0',
-            'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'tambah_stok' => 'nullable|integer|min:0',
+            'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
         $coverPath = $buku->cover;
@@ -96,15 +97,21 @@ class BukuController extends Controller
             $coverPath = $request->file('cover')->storeAs('covers', $filename, 'public');
         }
 
-        $buku->update([
-            'judul' => $request->judul,
-            'penulis' => $request->penulis,
-            'penerbit' => $request->penerbit,
-            'tahun_terbit' => $request->tahun_terbit,
-            'kategori_id' => $request->kategori_id,
-            'stok' => $request->stok,
-            'cover' => $coverPath
-        ]);
+       $stokBaru = $buku->stok;
+
+if ($request->tambah_stok) {
+    $stokBaru += $request->tambah_stok;
+}
+
+$buku->update([
+    'judul' => $request->judul,
+    'penulis' => $request->penulis,
+    'penerbit' => $request->penerbit,
+    'tahun_terbit' => $request->tahun_terbit,
+    'kategori_id' => $request->kategori_id,
+    'stok' => $stokBaru,
+    'cover' => $coverPath
+]);
 
         return redirect()->route('admin.kelola_buku')
             ->with('success', 'Buku berhasil diupdate');

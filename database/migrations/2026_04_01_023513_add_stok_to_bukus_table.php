@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('bukus', function (Blueprint $table) {
             $table->integer('stok')->default(0);
+                $table->integer('tambah_stok')->default(0)->after('stok');
         });
     }
 

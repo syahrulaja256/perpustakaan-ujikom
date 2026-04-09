@@ -94,6 +94,13 @@
                             {{ $b->penulis }}
                         </p>
 
+                        <p class="text-xs text-gray-400 mt-1.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-boxes text-xs text-green-400"></i>
+                             Stok: {{ $b->stok > 0 ? $b->stok : 'kosong' }}
+                        </p>
+                        
+                        
+
                         {{-- Rating --}}
                         <div class="flex items-center gap-2 mt-3">
                             <div class="flex text-amber-400 text-xs gap-0.5">

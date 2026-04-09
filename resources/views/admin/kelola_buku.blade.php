@@ -67,12 +67,23 @@
                             <label class="block text-xs font-semibold text-slate-600 mb-1.5">Stok</label>
                             <input type="number" name="stok" placeholder="Jumlah Stok" value="{{ $buku->stok ?? '' }}"
                                 class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 focus:outline-none transition" required min="0">
-                        </div>
+</div>
+            
+                        
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1.5">Cover</label>
                             <input type="file" name="cover"
                                 class="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-500 hover:file:bg-indigo-100">
                         </div>
+
+                         @if (isset($buku))
+    <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Tambah Stok</label>
+        <input type="number" name="tambah_stok" placeholder="Jumlah Tambah Stok"
+            class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 focus:outline-none transition"
+            min="0">
+    </div>
+@endif
                     </div>
 
                     <div class="mt-5 flex gap-2">
