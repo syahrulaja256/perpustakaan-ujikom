@@ -8,7 +8,8 @@
 
         {{-- Card Buku --}}
         <div class="w-1/3 space-y-5">
-            .
+            <div class="bg-[#F3F4F6] rounded-2xl overflow-hidden">
+                <img src="{{ asset('storage/' . $buku['cover']) }}" class="w-full h-72 object-cover" onerror="this.style.display='none'">
                 <div class="p-5">
                     <h3 class="font-bold text-lg text-slate-800">{{ $buku['judul'] }}</h3>
 
