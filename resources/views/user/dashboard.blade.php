@@ -60,9 +60,9 @@
                 <div class="bg-[#F3F4F6] rounded-2xl overflow-hidden card-hover animate-fade-in-up stagger-{{ ($index % 8) + 1 }} group/card">
 
                     {{-- Cover --}}
-                    <div class="relative overflow-hidden">
-                        <img src="{{ asset('storage/' . $b->cover) }}"
-                            class="w-full h-56 object-cover group-hover/card:scale-110 transition-transform duration-500">
+                  <div class="relative w-full aspect-[3/4] overflow-hidden rounded-t-2xl">
+    <img src="{{ asset('storage/' . $b->cover) }}"
+         class="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"></div>
 
                         {{-- Kategori Badge --}}
