@@ -43,7 +43,7 @@
                 <p style="border-top:1px solid #333;display:inline-block;padding-top:5px;width:150px;">( __________________ )</p>
             </td>
             <td style="width:50%;text-align:center;">
-                <p style="font-size:11px;color:#666;">Peminjam</p><br><br><br>
+                <p style="font-size:11px;color:#666;">K</p><br><br><br>
                 <p style="border-top:1px solid #333;display:inline-block;padding-top:5px;width:150px;">( {{ $peminjaman->user->name ?? '' }} )</p>
             </td>
         </tr>
